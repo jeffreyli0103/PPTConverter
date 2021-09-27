@@ -1,0 +1,15 @@
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\PPTConverter.exe.config
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\PPTConverter.exe
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\PPTConverter.pdb
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.License.dll
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.Pdf.dll
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.Presentation.dll
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Microsoft.mshtml.dll
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.License.xml
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.Pdf.xml
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\bin\Debug\Spire.Presentation.xml
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\obj\Debug\PPTConverter.csprojAssemblyReference.cache
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\obj\Debug\PPTConverter.csproj.CoreCompileInputs.cache
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\obj\Debug\PPTConverter.csproj.CopyComplete
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\obj\Debug\PPTConverter.exe
+C:\Users\jeffr\source\repos\PPTConverter\PPTConverter\obj\Debug\PPTConverter.pdb

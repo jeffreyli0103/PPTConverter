@@ -1,0 +1,6 @@
+.vs
+.suo
+*csproj*
+*.exe
+*.pdb
+*.cache

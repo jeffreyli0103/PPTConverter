@@ -90,50 +90,33 @@ namespace PPTConverter
                 ppt.LoadFromFile(filePath);
                 List<IShape> shapelist = new List<IShape>();
                 List<IShape> bodylist = new List<IShape>();
+                StringBuilder body = new StringBuilder();
+                StringBuilder title = new StringBuilder();
+                StringBuilder verse = new StringBuilder();
                 foreach (ISlide slide in ppt.Slides)
                 {
+
                     foreach (IShape shape in slide.Shapes)
                     {
-                        if (shape.Placeholder != null)
-                        {
-                            switch (shape.Placeholder.Type)
-                            {
-                                case PlaceholderType.Title:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.CenteredTitle:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.Subtitle:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.Object:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.None:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.Body:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.Media:
-                                    shapelist.Add(shape);
-                                    break;
-                                case PlaceholderType.Table:
-                                    shapelist.Add(shape);
-                                    break;
-                            }
-                        }
+                        
+                        Console.WriteLine($"slides title: {slide.Name}");
+                        Console.WriteLine($"slides title: {slide.Title}");
+                        Console.WriteLine($"slides title: {slide.SlideNumber}");
+                        var posY = shape.Frame.Top + shape.Frame.Height;
+                        var posX = shape.Frame.CenterX;
 
+                        if (posY < 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //body
+                            body.AppendLine(getShapeText(shape).Replace(slide.Title,""));
+                        //if(posY > 300 && posX < 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //verse
+                        //    verse.AppendLine(getShapeText(shape));
+                        //if(posY > 300 && posX > 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //song name
+                        //    title.AppendLine(getShapeText(shape));
                     }
                 }
-                Console.OutputEncoding = System.Text.Encoding.UTF8;
-                for (int i = 0; i < shapelist.Count; i++)
-                {
-                    IAutoShape shape1 = shapelist[i] as IAutoShape;
-                    long_text += shape1.TextFrame.Text;
-                }
-                Clipboard.SetText(long_text);
+                Console.WriteLine($"body:{body.ToString()}");
+                Console.WriteLine($"title:{title.ToString()}");
+                Console.WriteLine($"verse:{verse.ToString()}");
+                Clipboard.SetText(body.ToString());
                 Console.WriteLine("Copied text to Clipboard");
             }
             catch (Exception ex)
@@ -141,6 +124,30 @@ namespace PPTConverter
                 Console.WriteLine(ex.Message);
             }
             return long_text;
+        }
+        public static string getShapeText(IShape shape)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (shape is IAutoShape)
+            {
+                IAutoShape ashape = shape as IAutoShape;
+                if (ashape.TextFrame != null)
+                {
+                    foreach (TextParagraph pg in ashape.TextFrame.Paragraphs)
+                    {
+                        sb.AppendLine(pg.Text);
+                    }
+                }
+            }
+            else if (shape is GroupShape)
+            {
+                GroupShape gs = shape as GroupShape;
+                foreach (IShape s in gs.Shapes)
+                {
+                    sb.AppendLine(getShapeText(s));
+                }
+            }
+            return sb.ToString();
         }
     }
 }

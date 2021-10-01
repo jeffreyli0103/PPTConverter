@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace PPTConverter
 {
-    class Program
+    class Program 
     {
         [STAThreadAttribute]
         static void Main(string[] args)
@@ -88,35 +88,66 @@ namespace PPTConverter
             {
                 Presentation ppt = new Presentation();
                 ppt.LoadFromFile(filePath);
-                List<IShape> shapelist = new List<IShape>();
-                List<IShape> bodylist = new List<IShape>();
-                StringBuilder body = new StringBuilder();
-                StringBuilder title = new StringBuilder();
-                StringBuilder verse = new StringBuilder();
+                List<string> paragraphList = new List<string>() {"verse","pre chorus", "chorus", "bridge"};
+                int verse_counter = 1;
+                String songName = "",paragraphName = "",verse = "";
+                
+                Dictionary<string,Dictionary<string,StringBuilder>> songList = new Dictionary<string, Dictionary<string, StringBuilder>>(){ };
                 foreach (ISlide slide in ppt.Slides)
                 {
-
-                    foreach (IShape shape in slide.Shapes)
+                    if (slide.SlideNumber > 1)
                     {
-                        
-                        Console.WriteLine($"slides title: {slide.Name}");
-                        Console.WriteLine($"slides title: {slide.Title}");
-                        Console.WriteLine($"slides title: {slide.SlideNumber}");
-                        var posY = shape.Frame.Top + shape.Frame.Height;
-                        var posX = shape.Frame.CenterX;
+                        Dictionary<string, StringBuilder> paragraph = new Dictionary<string, StringBuilder>() { };
 
-                        if (posY < 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //body
-                            body.AppendLine(getShapeText(shape).Replace(slide.Title,""));
-                        //if(posY > 300 && posX < 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //verse
-                        //    verse.AppendLine(getShapeText(shape));
-                        //if(posY > 300 && posX > 300 && slide.SlideNumber > 1 && !String.IsNullOrEmpty(getShapeText(shape))) //song name
-                        //    title.AppendLine(getShapeText(shape));
+                        paragraphName = $"{verse_counter}";
+                        StringBuilder lyris = new StringBuilder();
+                        foreach (IShape shape in slide.Shapes)
+                        {
+                            var count_paragraph = paragraphList.Where(p => getShapeText(shape).ToLower().Contains(p));
+                            var posY = shape.Frame.Top + shape.Frame.Height;
+                            //var posX = shape.Frame.CenterX;
+                            if (posY < 140 && count_paragraph.Count() == 0 && !String.IsNullOrEmpty(getShapeText(shape).Replace("\r\n", "").Trim()))
+                            {  //song name 
+                                songName = getShapeText(shape).Replace("\r\n", "");
+                                verse_counter = 1;
+                            }
+                            if (posY < 140 && count_paragraph.Count() > 0 && !String.IsNullOrEmpty(getShapeText(shape).Replace("\r\n", "").Trim()))
+                            {  //paragraph name
+                                verse = getShapeText(shape).Replace("\r\n", "");
+                                lyris.AppendLine($";{verse}");
+                            }
+                            if (posY < 500  && posY > 140)  //body
+                                lyris.AppendLine(getShapeText(shape).Replace(slide.Title, ""));
+
+                        }
+                        if (lyris.ToString().Trim() != "")
+                        { 
+                            paragraph.Add(verse_counter.ToString(), lyris);
+                            if (songList.ContainsKey(songName))
+                                songList[$"{songName}"].Add(paragraphName, lyris);
+                            else
+                                songList.Add(songName, paragraph);
+
+                            verse_counter++;
+                        }
+
                     }
+                    
                 }
-                Console.WriteLine($"body:{body.ToString()}");
-                Console.WriteLine($"title:{title.ToString()}");
-                Console.WriteLine($"verse:{verse.ToString()}");
-                Clipboard.SetText(body.ToString());
+                string sqlquery = "";
+                foreach (var song in songList)
+                {
+                    sqlquery += "Insert into xxx ('";
+                    foreach (var page in song.Value)
+                    {
+                        if (page.Value.ToString().Contains(";")) 
+                            sqlquery += $"[{page.Value.ToString().Split(';')[1].Trim()}] \r\n {page.Value.ToString().Split(';')[0]}";
+                        else
+                            sqlquery += $"[{page.Key}] \r\n {page.Value}";
+                    }
+                    sqlquery += "');";
+                }
+                Clipboard.SetText(sqlquery);
                 Console.WriteLine("Copied text to Clipboard");
             }
             catch (Exception ex)

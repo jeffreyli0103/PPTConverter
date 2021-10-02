@@ -56,12 +56,13 @@ namespace PPTConverter
                         FileInfo fi = new FileInfo(args[1]);
                         if (fi.Extension == ".pptx")
                         {
-                            Console.WriteLine("It is a powerpoint!");
+                            Console.WriteLine("Powerpoint 2007");
                             ProcessTextFromPowerpoint(args[1]);
                         }
                         if (fi.Extension == ".ppt")
                         {
                             Console.WriteLine("Powerpoint 1997-2003");
+                            ProcessTextFromPowerpoint(args[1]);
                         }
                     }
                     else
@@ -83,7 +84,7 @@ namespace PPTConverter
 
         public static string ProcessTextFromPowerpoint(string filePath)
         {
-            string long_text = "";
+            string sqlquery = "";
             try
             {
                 Presentation ppt = new Presentation();
@@ -134,7 +135,7 @@ namespace PPTConverter
                     }
                     
                 }
-                string sqlquery = "";
+                
                 foreach (var song in songList)
                 {
                     sqlquery += $"Insert into items(title1,author,lastmodified,songnumber,folderno,oldfolderno,cjkwordcount,cjkstrokecount,formatdata,contents)VALUES('{song.Key}','',date('now'),0,6,0,'00','000{song.Key}','<ShowSongHeadings>0</ShowSongHeadings><ShowSongHeadingsAlign>0</ShowSongHeadingsAlign><UseShadowFont>1</UseShadowFont><ShowNotations>0</ShowNotations><CapoZero>0</CapoZero><UseOutlineFont>0</UseOutlineFont><DisplayRegions>2</DisplayRegions><DisplayRegionsLayout>0</DisplayRegionsLayout><ScreenColour1>-16777056</ScreenColour1><ScreenColour2>-16777056</ScreenColour2><ScreenPatternStyle>0</ScreenPatternStyle><BackgroundPicture /><BackgroundPictureMode>2</BackgroundPictureMode><VerticalAlign>1</VerticalAlign><ScreenLeftMargin>2</ScreenLeftMargin><ScreenRightMargin>2</ScreenRightMargin><ScreenBottomMargin>0</ScreenBottomMargin><ShowItemTransition>0</ShowItemTransition><ShowSlideTransition>0</ShowSlideTransition><FontVPosition1>0</FontVPosition1><FontVPosition2>50</FontVPosition2><MediaOption>0</MediaOption><MediaVolume>50</MediaVolume><MediaBalance>-1</MediaBalance><MediaMute>0</MediaMute><MediaRepeat>0</MediaRepeat><MediaWidescreen>0</MediaWidescreen><MediaCaptureDeviceNumber>1</MediaCaptureDeviceNumber><HeadingFontFormat>1</HeadingFontFormat><HeadingFontPercentSize>100</HeadingFontPercentSize><HeadingFontBold>0</HeadingFontBold><HeadingFontItalic>0</HeadingFontItalic><HeadingFontUnderline>0</HeadingFontUnderline><HeadingFontChorusItalic>0</HeadingFontChorusItalic><FontBold1>1</FontBold1><FontItalic1>0</FontItalic1><FontUnderline1>0</FontUnderline1><FontChorusBold1>0</FontChorusBold1><FontChorusItalic1>0</FontChorusItalic1><FontChorusUnderline1>0</FontChorusUnderline1><FontBold2>0</FontBold2><FontItalic2>0</FontItalic2><FontUnderline2>0</FontUnderline2><FontChorusBold2>0</FontChorusBold2><FontChorusItalic2>0</FontChorusItalic2><FontChorusUnderline2>0</FontChorusUnderline2><FontName1>Microsoft Sans Serif</FontName1><FontName2>Microsoft Sans Serif</FontName2><FontSize1>40</FontSize1><FontSize2>40</FontSize2><FontColour1>-1</FontColour1><FontColour2>-1</FontColour2><FontRTL1>0</FontRTL1><FontRTL2>0</FontRTL2><FontAlign1>2</FontAlign1><FontAlign2>2</FontAlign2><ShowDataPanel>0</ShowDataPanel><AutoTextOverflow>2</AutoTextOverflow><UseLargestFontSize>2</UseLargestFontSize><LineBetweenRegions>2</LineBetweenRegions><WordWrapLeftAlignIndent>2</WordWrapLeftAlignIndent>','";
@@ -154,7 +155,7 @@ namespace PPTConverter
             {
                 Console.WriteLine(ex.Message);
             }
-            return long_text;
+            return sqlquery;
         }
         public static string getShapeText(IShape shape)
         {

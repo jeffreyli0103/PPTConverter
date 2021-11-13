@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPTConverter", "PPTConverter\PPTConverter.csproj", "{2E070303-CB0C-45F3-B4EB-60D759D9D34D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPTConvert_desktop", "PPTConvert_desktop\PPTConvert_desktop.csproj", "{93D1757E-14CE-42DB-9080-CA43DB722AD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2E070303-CB0C-45F3-B4EB-60D759D9D34D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E070303-CB0C-45F3-B4EB-60D759D9D34D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E070303-CB0C-45F3-B4EB-60D759D9D34D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93D1757E-14CE-42DB-9080-CA43DB722AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93D1757E-14CE-42DB-9080-CA43DB722AD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93D1757E-14CE-42DB-9080-CA43DB722AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93D1757E-14CE-42DB-9080-CA43DB722AD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

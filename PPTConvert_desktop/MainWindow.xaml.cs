@@ -7,6 +7,8 @@ using System.IO;
 using Microsoft.Win32;
 using Spire.Presentation;
 using System.Data.SQLite;
+using System.IO.IsolatedStorage;
+using System.Data;
 
 namespace PPTConvert_desktop
 {
@@ -18,27 +20,79 @@ namespace PPTConvert_desktop
         public MainWindow()
         {
             InitializeComponent();
+            CachedPath("db_dir.txt", isoStore);
+            CachedPath("ppt_dir.txt", isoStore);
+            CachedPath("lib_dir.txt", isoStore);
         }
+
         public string db_dir;
         public string ppt_dir;
+        public string lib_dir;
         public string format = "lower";
+        IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Assembly, null, null);
+
+
+        #region Select file
         private void selectDB(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Database files|*.db";
+            if(File.Exists(db_dir))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(db_dir);
+            }
             if (openFileDialog.ShowDialog() == true) { 
                 db_dir = openFileDialog.FileName;
                 db_dir_tb.Text = db_dir;
+                //store path in txt
+                createNewPath("db_dir.txt", db_dir);
             }
         }
 
         private void selectPPT(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (File.Exists(ppt_dir))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(ppt_dir);
+            }
             openFileDialog.Filter = "PowerPoint Presentations|*.ppt;*.pptx";
             if (openFileDialog.ShowDialog() == true) {
                 ppt_dir = openFileDialog.FileName;
                 ppt_dir_label.Content = ppt_dir;
+                //store path in txt
+                createNewPath("ppt_dir.txt", ppt_dir);
+            }
+        }
+
+
+        private void selectLib(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (File.Exists(lib_dir))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(lib_dir);
+            }
+            openFileDialog.Filter = "Database files|*.db";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                lib_dir = openFileDialog.FileName;
+                lib_dir_tb.Text = lib_dir;
+                //store path in txt
+                createNewPath("lib_dir.txt", lib_dir);
+            }
+
+        }
+        #endregion
+
+        private void createNewPath(string fileName,string filePath)
+        {
+            using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.Create, isoStore))
+            {
+                using (StreamWriter writer = new StreamWriter(isoStream))
+                {
+                    writer.WriteLine(filePath);
+                }
             }
         }
 
@@ -48,16 +102,15 @@ namespace PPTConvert_desktop
             {
                 ProcessTextFromPowerpoint(ppt_dir, format, db_dir);
             }
-            else consoleLog("format error, please try again.");
+            else consoleLog("File not found, please try again.");
         }
         public void consoleLog(string text)
         {
             console.Text += text + "\r\n";
         }
 
-        public string ProcessTextFromPowerpoint(string filePath, string format, string db)
+        public void ProcessTextFromPowerpoint(string filePath, string format, string db)
         {
-            string sqlquery = "";
             try
             {
                 Presentation ppt = new Presentation();
@@ -155,52 +208,61 @@ namespace PPTConvert_desktop
                 executeSQL("Delete from items", db);
                 foreach (var song in songList)
                 {
-                    sqlquery +=
-                        $"Insert into items(title1,author,lastmodified,songnumber,folderno," +
-                        $"oldfolderno,cjkwordcount,cjkstrokecount,formatdata,contents)VALUES('" +
-                        $"{song.Key}','',date('now'),0,6,0,'00','000{song.Key}','<ShowSongHeadings>0</ShowSongHeadings>" +
-                        $"<ShowSongHeadingsAlign>0</ShowSongHeadingsAlign><UseShadowFont>1</UseShadowFont>" +
-                        $"<ShowNotations>0</ShowNotations><CapoZero>0</CapoZero><UseOutlineFont>0</UseOutlineFont>" +
-                        $"<DisplayRegions>2</DisplayRegions><DisplayRegionsLayout>0</DisplayRegionsLayout>" +
-                        $"<ScreenColour1>-16777056</ScreenColour1><ScreenColour2>-16777056</ScreenColour2>" +
-                        $"<ScreenPatternStyle>0</ScreenPatternStyle><BackgroundPicture />" +
-                        $"<BackgroundPictureMode>2</BackgroundPictureMode><VerticalAlign>1</VerticalAlign>" +
-                        $"<ScreenLeftMargin>2</ScreenLeftMargin><ScreenRightMargin>2</ScreenRightMargin>" +
-                        $"<ScreenBottomMargin>0</ScreenBottomMargin><ShowItemTransition>0</ShowItemTransition>" +
-                        $"<ShowSlideTransition>0</ShowSlideTransition><FontVPosition1>0</FontVPosition1>" +
-                        $"<FontVPosition2>50</FontVPosition2><MediaOption>0</MediaOption><MediaVolume>50</MediaVolume>" +
-                        $"<MediaBalance>-1</MediaBalance><MediaMute>0</MediaMute><MediaRepeat>0</MediaRepeat>" +
-                        $"<MediaWidescreen>0</MediaWidescreen><MediaCaptureDeviceNumber>1</MediaCaptureDeviceNumber>" +
-                        $"<HeadingFontFormat>1</HeadingFontFormat><HeadingFontPercentSize>100</HeadingFontPercentSize>" +
-                        $"<HeadingFontBold>0</HeadingFontBold><HeadingFontItalic>0</HeadingFontItalic>" +
-                        $"<HeadingFontUnderline>0</HeadingFontUnderline><HeadingFontChorusItalic>0</HeadingFontChorusItalic>" +
-                        $"<FontBold1>1</FontBold1><FontItalic1>0</FontItalic1><FontUnderline1>0</FontUnderline1>" +
-                        $"<FontChorusBold1>0</FontChorusBold1><FontChorusItalic1>0</FontChorusItalic1>" +
-                        $"<FontChorusUnderline1>0</FontChorusUnderline1><FontBold2>0</FontBold2><FontItalic2>0</FontItalic2>" +
-                        $"<FontUnderline2>0</FontUnderline2><FontChorusBold2>0</FontChorusBold2><FontChorusItalic2>0</FontChorusItalic2>" +
-                        $"<FontChorusUnderline2>0</FontChorusUnderline2><FontName1>Microsoft Sans Serif</FontName1>" +
-                        $"<FontName2>Microsoft Sans Serif</FontName2><FontSize1>40</FontSize1><FontSize2>40</FontSize2>" +
-                        $"<FontColour1>-1</FontColour1><FontColour2>-1</FontColour2><FontRTL1>0</FontRTL1><FontRTL2>0</FontRTL2>" +
-                        $"<FontAlign1>2</FontAlign1><FontAlign2>2</FontAlign2><ShowDataPanel>0</ShowDataPanel>" +
-                        $"<AutoTextOverflow>2</AutoTextOverflow><UseLargestFontSize>2</UseLargestFontSize>" +
-                        $"<LineBetweenRegions>2</LineBetweenRegions><WordWrapLeftAlignIndent>2</WordWrapLeftAlignIndent>','";
-                    foreach (var page in song.Value)
+                    var libRecords = selectQuery(song.Key, lib_dir);
+                    var sqlquery = "";
+                    if (!string.IsNullOrEmpty(libRecords))
                     {
-                        //if (page.Value.ToString().Contains(";")) 
-                        //    sqlquery += $"[{page.Value.ToString().Split(';')[1].Trim()}] \r\n {page.Value.ToString().Split(';')[0].Replace("'","''")}";
-                        //else
-                        sqlquery += $"[{page.Key}] \r\n {page.Value.Replace("'", "''")}";
+                        sqlquery = $"Insert into items VALUES " + libRecords;
                     }
-                    sqlquery += "');";
+                    else { 
+                        sqlquery +=
+                            $"Insert into items(title1,author,lastmodified,songnumber,folderno," +
+                            $"oldfolderno,cjkwordcount,cjkstrokecount,formatdata,contents)VALUES('" +
+                            $"{song.Key}','',date('now'),0,6,0,'00','000{song.Key}','<ShowSongHeadings>0</ShowSongHeadings>" +
+                            $"<ShowSongHeadingsAlign>0</ShowSongHeadingsAlign><UseShadowFont>1</UseShadowFont>" +
+                            $"<ShowNotations>0</ShowNotations><CapoZero>0</CapoZero><UseOutlineFont>0</UseOutlineFont>" +
+                            $"<DisplayRegions>2</DisplayRegions><DisplayRegionsLayout>0</DisplayRegionsLayout>" +
+                            $"<ScreenColour1>-16777056</ScreenColour1><ScreenColour2>-16777056</ScreenColour2>" +
+                            $"<ScreenPatternStyle>0</ScreenPatternStyle><BackgroundPicture />" +
+                            $"<BackgroundPictureMode>2</BackgroundPictureMode><VerticalAlign>1</VerticalAlign>" +
+                            $"<ScreenLeftMargin>2</ScreenLeftMargin><ScreenRightMargin>2</ScreenRightMargin>" +
+                            $"<ScreenBottomMargin>0</ScreenBottomMargin><ShowItemTransition>0</ShowItemTransition>" +
+                            $"<ShowSlideTransition>0</ShowSlideTransition><FontVPosition1>0</FontVPosition1>" +
+                            $"<FontVPosition2>50</FontVPosition2><MediaOption>0</MediaOption><MediaVolume>50</MediaVolume>" +
+                            $"<MediaBalance>-1</MediaBalance><MediaMute>0</MediaMute><MediaRepeat>0</MediaRepeat>" +
+                            $"<MediaWidescreen>0</MediaWidescreen><MediaCaptureDeviceNumber>1</MediaCaptureDeviceNumber>" +
+                            $"<HeadingFontFormat>1</HeadingFontFormat><HeadingFontPercentSize>100</HeadingFontPercentSize>" +
+                            $"<HeadingFontBold>0</HeadingFontBold><HeadingFontItalic>0</HeadingFontItalic>" +
+                            $"<HeadingFontUnderline>0</HeadingFontUnderline><HeadingFontChorusItalic>0</HeadingFontChorusItalic>" +
+                            $"<FontBold1>1</FontBold1><FontItalic1>0</FontItalic1><FontUnderline1>0</FontUnderline1>" +
+                            $"<FontChorusBold1>0</FontChorusBold1><FontChorusItalic1>0</FontChorusItalic1>" +
+                            $"<FontChorusUnderline1>0</FontChorusUnderline1><FontBold2>0</FontBold2><FontItalic2>0</FontItalic2>" +
+                            $"<FontUnderline2>0</FontUnderline2><FontChorusBold2>0</FontChorusBold2><FontChorusItalic2>0</FontChorusItalic2>" +
+                            $"<FontChorusUnderline2>0</FontChorusUnderline2><FontName1>Microsoft Sans Serif</FontName1>" +
+                            $"<FontName2>Microsoft Sans Serif</FontName2><FontSize1>40</FontSize1><FontSize2>40</FontSize2>" +
+                            $"<FontColour1>-1</FontColour1><FontColour2>-1</FontColour2><FontRTL1>0</FontRTL1><FontRTL2>0</FontRTL2>" +
+                            $"<FontAlign1>2</FontAlign1><FontAlign2>2</FontAlign2><ShowDataPanel>0</ShowDataPanel>" +
+                            $"<AutoTextOverflow>2</AutoTextOverflow><UseLargestFontSize>2</UseLargestFontSize>" +
+                            $"<LineBetweenRegions>2</LineBetweenRegions><WordWrapLeftAlignIndent>2</WordWrapLeftAlignIndent>','";
+                        foreach (var page in song.Value)
+                        {
+                            //if (page.Value.ToString().Contains(";")) 
+                            //    sqlquery += $"[{page.Value.ToString().Split(';')[1].Trim()}] \r\n {page.Value.ToString().Split(';')[0].Replace("'","''")}";
+                            //else
+                            sqlquery += $"[{page.Key}] \r\n{page.Value.Replace("'", "''")}";
+                        }
+                        sqlquery += "');";
+                    }
+                    executeSQL(sqlquery, db);
+                    consoleLog($"Inserted song:{song.Key} into database");
+                    //TODO: use song.Key to search lib
                 }
-                executeSQL(sqlquery, db);
-                consoleLog("Inserted into database");
+                
             }
             catch (Exception ex)
             {
                 consoleLog(ex.Message);
             }
-            return sqlquery;
         }
         public static string getShapeText(IShape shape)
         {
@@ -255,6 +317,49 @@ namespace PPTConvert_desktop
                 consoleLog($"Something wrong. Exception msg: {ex.Message}");
             }
         }
+        private string selectQuery(string song,string db)
+        {
+            string data = "";
+            try
+            {
+                FileInfo fi = new FileInfo(db);
+                if (fi.Extension == ".db")
+                {
+                    string cs = $"URI=file:{db}";
+                    var con = new SQLiteConnection(cs);
+                    con.Open();
+                    var sqlquery = $"SELECT * FROM items where title1 ='{song}'";
+                    var cmd = new SQLiteCommand(con);
+                    cmd.CommandText = sqlquery;
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = "(";
+                            for(int i = 0; i < reader.FieldCount; i++)
+                            {
+                                data += $"'{reader.GetValue(i)}'";
+                                if (i != reader.FieldCount - 1) {
+                                    data += ",";
+                                }
+                            }
+                            data += ");";
+                        }
+                    }
+                    con.Close();
+                }
+                else
+                {
+                    consoleLog("Invalid database path, please attach the correct path.");
+                }
+            }
+            catch (Exception ex)
+            {
+                consoleLog($"Something wrong. Exception msg: {ex.Message}");
+            }
+            return data;
+        }
 
         private void upper_radio_Checked(object sender, RoutedEventArgs e)
         {
@@ -265,5 +370,39 @@ namespace PPTConvert_desktop
         {
             format = "lower";
         }
+        private void CachedPath(string fileName, IsolatedStorageFile isoStore)
+        {
+            if (isoStore.FileExists(fileName))
+            {
+                using (IsolatedStorageFileStream isoStream = new IsolatedStorageFileStream(fileName, FileMode.Open, isoStore))
+                {
+                    using (StreamReader reader = new StreamReader(isoStream))
+                    {
+                        if (fileName.Contains("ppt_dir"))
+                        {
+                            ppt_dir = reader.ReadToEnd().Replace("\r\n","");
+                            ppt_dir_label.Content = ppt_dir;
+                        }
+                        if (fileName.Contains("db_dir"))
+                        {
+                            db_dir = reader.ReadToEnd().Replace("\r\n", ""); 
+                            db_dir_tb.Text = db_dir;
+                        }
+                        if (fileName.Contains("lib_dir"))
+                        {
+                            lib_dir = reader.ReadToEnd().Replace("\r\n", "");
+                            lib_dir_tb.Text = lib_dir;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void updateLib(object sender, RoutedEventArgs e)
+        {
+            consoleLog("feature is coming soon!");
+        }
+
     }
 }

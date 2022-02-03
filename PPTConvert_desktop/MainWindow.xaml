@@ -6,17 +6,25 @@
         xmlns:local="clr-namespace:PPTConvert_desktop"
         ResizeMode="NoResize"
         mc:Ignorable="d"
-        Title="MainWindow" Height="440.653" Width="679.822">
+        Title="MainWindow" Height="537.653" Width="688.822">
     <Grid>
-        <Button x:Name="selectPPT_btn" Content="Select PPT" HorizontalAlignment="Left" Margin="60,32,0,0" VerticalAlignment="Top" Width="150" Height="44" Click="selectPPT"/>
-        <Button x:Name="selectDB_btn" Content="Select Database" HorizontalAlignment="Left" Margin="60,101,0,0" VerticalAlignment="Top" Width="150" Height="44" Click="selectDB"/>
-        <Label x:Name="ppt_dir_label" Content="" HorizontalAlignment="Left" Margin="230,41,0,0" VerticalAlignment="Top" Width="389"/>
-        <TextBlock x:Name="db_dir_tb" HorizontalAlignment="Left" Margin="230,101,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="119" Width="389"/>
-        <Button x:Name="importToDB_btn" Content="Import To DB" HorizontalAlignment="Left" Margin="60,223,0,0" VerticalAlignment="Top" Width="150" Height="45" Click="importToDB"/>
-        <TextBox x:Name="console" HorizontalAlignment="Left" Height="89" Margin="60,297,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="548" Background="WhiteSmoke" BorderBrush="#FF8D8D8D"/>
-        <Label x:Name="label" Content="check ppt format" HorizontalAlignment="Left" Margin="83,155,0,0" VerticalAlignment="Top" Width="107"/>
-        <RadioButton x:Name="upper_radio" Content="upper&#xD;&#xA;" HorizontalAlignment="Left" Margin="108,181,0,0" VerticalAlignment="Top" Height="18" Width="67" Checked="upper_radio_Checked"/>
-        <RadioButton x:Name="lower_radio" IsChecked="true" Content="lower" HorizontalAlignment="Left" Margin="108,199,0,0" VerticalAlignment="Top" Checked="lower_radio_Checked"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="686*"/>
+            <ColumnDefinition Width="17*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="selectPPT_btn" Content="Select PPT" HorizontalAlignment="Left" Margin="25,23,0,0" VerticalAlignment="Top" Width="150" Height="44" Click="selectPPT"/>
+        <Button x:Name="selectDB_btn" Content="Select Import Database" HorizontalAlignment="Left" Margin="25,121,0,0" VerticalAlignment="Top" Width="150" Height="44" Click="selectDB"/>
+        <Label x:Name="ppt_dir_label" Content="" HorizontalAlignment="Left" Margin="201,34,0,0" VerticalAlignment="Top" Width="455" Height="33"/>
+        <TextBlock x:Name="db_dir_tb" HorizontalAlignment="Left" Margin="201,134,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="31" Width="455"/>
+        <Button x:Name="importToDB_btn" Content="Import To DB" HorizontalAlignment="Left" Margin="25,258,0,0" VerticalAlignment="Top" Width="150" Height="45" Click="importToDB" Background="#FF81E881"/>
+        <TextBox x:Name="console" HorizontalAlignment="Left" Height="143" Margin="25,356,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="323" Background="WhiteSmoke" BorderBrush="#FF8D8D8D"/>
+        <Label x:Name="label" Content="Select ppt format" HorizontalAlignment="Left" Margin="44,179,0,0" VerticalAlignment="Top" Width="107"/>
+        <RadioButton x:Name="upper_radio" Content="upper&#xD;&#xA;" HorizontalAlignment="Left" Margin="75,205,0,0" VerticalAlignment="Top" Height="18" Width="67" Checked="upper_radio_Checked"/>
+        <RadioButton x:Name="lower_radio" IsChecked="true" Content="lower" HorizontalAlignment="Left" Margin="75,223,0,0" VerticalAlignment="Top" Checked="lower_radio_Checked"/>
+        <TextBox x:Name="reminder" HorizontalAlignment="Left" Height="143" Margin="353,356,0,0" TextWrapping="Wrap" Text="提示:&#xD;&#xA;1. 第一頁PPT 須要是空白頁(非歌詞)&#xD;&#xA;2. PPT format 為歌名顯示位置&#xD;&#xA;3. Upper 歌名為最頂位置&#xD;&#xA;6. Lower 歌名為左下角, 文本框不可超過頁面中間&#xD;&#xA;4. 文本框不可重曡&#xD;&#xA;5. 每首歌歌名只需顯示一次&#xD;&#xA;6. !每次執行都會清除舊資料, 請小心使用&#xD;&#xA;" VerticalAlignment="Top" Width="311"/>
+        <Button x:Name="selectLib_btn" Content="Select Library" HorizontalAlignment="Left" Height="44" Margin="25,72,0,0" VerticalAlignment="Top" Width="150" Click="selectLib"/>
+        <Button x:Name="updateLib_btn" Content="Update Library" HorizontalAlignment="Left" Height="43" Margin="25,308,0,0" VerticalAlignment="Top" Width="150" Click="updateLib"/>
+        <TextBlock x:Name="lib_dir_tb" HorizontalAlignment="Left" Margin="201,84,0,0" TextWrapping="Wrap"  Text="" VerticalAlignment="Top" Height="32" Width="455"/>
     </Grid>
-    
+
 </Window>
